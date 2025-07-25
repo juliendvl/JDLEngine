@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.11)
 project(JDLEngine)
 
+set(ENGINE_NAME jdlengine)
 set(ENGINE_DIR ${CMAKE_SOURCE_DIR}/jdlengine)
 set(VENDOR_DIR ${ENGINE_DIR}/VENDOR)
 
@@ -15,5 +16,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Use C++17 as reference
 set(CMAKE_CXX_STANDARD 17)
 
+# Engine library
+add_subdirectory(${ENGINE_DIR})
 # Sandbox application
 add_subdirectory(${CMAKE_SOURCE_DIR}/sandbox)
