@@ -13,6 +13,7 @@ if (MSVC)
     add_definitions(-DJDL_BUILD_DLL)
 endif()
 
+# jdlengine
 add_library(
     ${ENGINE_NAME}
     SHARED
@@ -20,3 +21,8 @@ add_library(
     ${UTILS_SRC}
 )
 include_directories(${INC_DIR})
+
+# spdlog
+add_subdirectory(${VENDOR_DIR}/spdlog)
+include_directories(${VENDOR_DIR}/spdlog/include)
+target_link_libraries(${ENGINE_NAME} spdlog::spdlog)
