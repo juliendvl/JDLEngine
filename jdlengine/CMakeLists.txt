@@ -26,3 +26,12 @@ include_directories(${INC_DIR})
 add_subdirectory(${VENDOR_DIR}/spdlog)
 include_directories(${VENDOR_DIR}/spdlog/include)
 target_link_libraries(${ENGINE_NAME} spdlog::spdlog)
+
+# glfw
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+set(GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
+
+add_subdirectory(${VENDOR_DIR}/glfw)
+include_directories(${VENDOR_DIR}/glfw/include)
+target_link_libraries(${ENGINE_NAME} glfw)
