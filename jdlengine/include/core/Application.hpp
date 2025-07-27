@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.hpp"
+#include "Window.hpp"
 
 #include "utils/NonCopyable.hpp"
 
@@ -41,6 +42,13 @@ public:
     }
 
     /**
+     * @brief Returns the application window.
+     */
+    static Window& GetWindow() {
+        return *IApplication->m_window;
+    }
+
+    /**
      * @brief Runs the application.
      */
     void run();
@@ -51,6 +59,8 @@ private:
 
     // Application name
     std::string m_name;
+    // Application window
+    std::unique_ptr<Window> m_window;
 };
 
 /**
