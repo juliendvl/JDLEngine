@@ -42,8 +42,11 @@ private:
 
     // Vulkan instance
     VkInstance m_instance = VK_NULL_HANDLE;
+    // Debug messenger
+    VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
 
     void createInstance();
+    void createDebugMessenger();
 };
 
 } // namespace core
