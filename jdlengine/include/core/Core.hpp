@@ -24,5 +24,18 @@
 #include <string>
 #include <vector>
 
+#include <vulkan/vulkan.h>
+
+// --- MACROS ---
+#ifndef NDEBUG
+    #define VK_CALL(f)  {                                                                   \
+                            VkResult r = f;                                                 \
+                            if (r != VK_SUCCESS)                                            \
+                                JDL_FATAL("VULKAN: {} failed with status {}", #f, (int)r);  \
+                        }
+#else
+    #define VK_CALL(f) f
+#endif
+
 // --- WARNINGS ---
 #pragma warning(disable: 4251)

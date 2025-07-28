@@ -1,4 +1,5 @@
 #include "core/Application.hpp"
+#include "core/VulkanContext.hpp"
 
 #include "utils/Logger.hpp"
 
@@ -21,10 +22,14 @@ Application::Application(const char* name, int width, int height)
 
     JDL_INFO("Creating the application window");
     m_window = std::make_unique<Window>(name, width, height);
+
+    VulkanContext::Init();
 }
 
 Application::~Application()
 {
+    VulkanContext::Destroy();
+
     JDL_INFO("Destroying the application window");
     m_window.reset();
 }
