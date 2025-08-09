@@ -130,6 +130,9 @@ void VulkanContext::doInit()
             JDL_INFO("VulkanContext - Creating debug messenger");
             createDebugMessenger();
         }
+
+        selectPhysicalDevice();
+        createDevice();
     }
 }
 
@@ -137,6 +140,9 @@ void VulkanContext::doDestroy()
 {
     if (m_instance != VK_NULL_HANDLE)
     {
+        JDL_INFO("VulkanContext - Destroying device");
+        vkDestroyDevice(m_device, nullptr);
+
         if (m_debugMessenger != VK_NULL_HANDLE)
         {
             JDL_INFO("VulkanContext - Destroying debug messenger");
@@ -193,6 +199,106 @@ void VulkanContext::createDebugMessenger()
 {
     VkDebugUtilsMessengerCreateInfoEXT createInfo = s_GetDebugMessengerCreateInfo();
     VK_CALL(s_CreateDebugMessenger(m_instance, &createInfo, nullptr, &m_debugMessenger));
+}
+
+void VulkanContext::selectPhysicalDevice()
+{
+    uint32_t nbDevices;
+    VK_CALL(vkEnumeratePhysicalDevices(m_instance, &nbDevices, nullptr));
+
+    std::vector<VkPhysicalDevice> physicalDevices(nbDevices);
+    if (nbDevices == 0) {
+        JDL_FATAL("Cannot find GPUs with Vulkan support");
+    }
+    VK_CALL(vkEnumeratePhysicalDevices(m_instance, &nbDevices, physicalDevices.data()));
+
+    std::vector<VkPhysicalDevice> validDevices;
+    std::vector<QueueFamilyIndices> validQueueFamilyIndices;
+
+    for (VkPhysicalDevice device : physicalDevices)
+    {
+        uint32_t nbQueues = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &nbQueues, nullptr);
+
+        if (nbQueues == 0) {
+            continue;
+        }
+        std::vector<VkQueueFamilyProperties> queues(nbQueues);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &nbQueues, queues.data());
+
+        QueueFamilyIndices queueIndices;
+        for (uint32_t i = 0; i < nbQueues; ++i)
+        {
+            if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                queueIndices.graphics = i;
+            }
+            if (queueIndices.isComplete())
+            {
+                validDevices.push_back(device);
+                validQueueFamilyIndices.push_back(queueIndices);
+                break;
+            }
+        }
+    }
+    if (validDevices.empty()) {
+        JDL_FATAL("Cannot find GPUs compatible with the application requirements");
+    }
+
+    // When multiple physical devices are valid, select in priority the dedicated GPU if any
+    m_physicalDevice = validDevices[0];
+    m_queueFamilyIndices = validQueueFamilyIndices[0];
+
+    for (auto i = 1; i < validDevices.size(); ++i)
+    {
+        VkPhysicalDeviceProperties deviceProperties;
+        vkGetPhysicalDeviceProperties(validDevices[i], &deviceProperties);
+
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+        {
+            m_physicalDevice = validDevices[i];
+            m_queueFamilyIndices = validQueueFamilyIndices[i];
+            break;
+        }
+    }
+
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(m_physicalDevice, &deviceProperties);
+    JDL_INFO("VulkanContext - Selected physical device: {}", deviceProperties.deviceName);
+}
+
+void VulkanContext::createDevice()
+{
+    float priority = 1.0f;
+
+    // Device queues
+    std::vector<VkDeviceQueueCreateInfo> queuesCreateInfo;
+    for (uint32_t queueIndex : m_queueFamilyIndices.getUniqueIndices())
+    {
+        VkDeviceQueueCreateInfo createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        createInfo.queueFamilyIndex = queueIndex;
+        createInfo.queueCount = 1;
+        createInfo.pQueuePriorities = &priority;
+
+        queuesCreateInfo.push_back(createInfo);
+    }
+
+    // Device features
+    VkPhysicalDeviceFeatures deviceFeatures = {};
+
+    VkDeviceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queuesCreateInfo.size());
+    createInfo.pQueueCreateInfos = queuesCreateInfo.data();
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledLayerCount = 0;
+
+    JDL_INFO("VulkanContext - Creating device");
+    VK_CALL(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device));
+
+    // Retrieve queues handles
+    vkGetDeviceQueue(m_device, *m_queueFamilyIndices.graphics, 0, &m_graphicsQueue);
 }
 
 } // namespace core
