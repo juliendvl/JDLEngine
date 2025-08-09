@@ -131,6 +131,9 @@ void VulkanContext::doInit()
             createDebugMessenger();
         }
 
+        JDL_INFO("VulkanContext - Creating window surface");
+        createWindowSurface();
+
         selectPhysicalDevice();
         createDevice();
     }
@@ -142,6 +145,9 @@ void VulkanContext::doDestroy()
     {
         JDL_INFO("VulkanContext - Destroying device");
         vkDestroyDevice(m_device, nullptr);
+
+        JDL_INFO("VulkanContext - Creating window surface");
+        vkDestroySurfaceKHR(m_instance, m_windowSurface, nullptr);
 
         if (m_debugMessenger != VK_NULL_HANDLE)
         {
@@ -201,6 +207,11 @@ void VulkanContext::createDebugMessenger()
     VK_CALL(s_CreateDebugMessenger(m_instance, &createInfo, nullptr, &m_debugMessenger));
 }
 
+void VulkanContext::createWindowSurface()
+{
+    m_windowSurface = Window::Get().createWindowSurface();
+}
+
 void VulkanContext::selectPhysicalDevice()
 {
     uint32_t nbDevices;
@@ -229,9 +240,17 @@ void VulkanContext::selectPhysicalDevice()
         QueueFamilyIndices queueIndices;
         for (uint32_t i = 0; i < nbQueues; ++i)
         {
+            // Graphics support
             if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
                 queueIndices.graphics = i;
             }
+            // Present support
+            VkBool32 presentSupported = VK_FALSE;
+            VK_CALL(vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_windowSurface, &presentSupported));
+            if (presentSupported) {
+                queueIndices.present = i;
+            }
+
             if (queueIndices.isComplete())
             {
                 validDevices.push_back(device);
@@ -299,6 +318,7 @@ void VulkanContext::createDevice()
 
     // Retrieve queues handles
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.graphics, 0, &m_graphicsQueue);
+    vkGetDeviceQueue(m_device, *m_queueFamilyIndices.present, 0, &m_presentQueue);
 }
 
 } // namespace core

@@ -16,12 +16,13 @@ namespace core
 struct QueueFamilyIndices
 {
     std::optional<uint32_t> graphics;
+    std::optional<uint32_t> present;
 
     /**
      * @brief Returns whether all the required queue family indices have been set or not.
      */
     bool isComplete() const {
-        return graphics.has_value();
+        return graphics.has_value() && present.has_value();
     }
 
     /**
@@ -33,6 +34,7 @@ struct QueueFamilyIndices
         if (isComplete())
         {
             indices.insert(*graphics);
+            indices.insert(*present);
         }
         return indices;
     }
@@ -63,6 +65,13 @@ public:
     }
 
     /**
+     * @brief Returns the Vulkan window surface.
+     */
+    static VkSurfaceKHR GetWindowSurface() {
+        return CONTEXT.m_windowSurface;
+    }
+
+    /**
      * @brief Returns the selected physical device.
      */
     static VkPhysicalDevice GetPhysicalDevice() {
@@ -90,6 +99,13 @@ public:
         return CONTEXT.m_graphicsQueue;
     }
 
+    /**
+     * @brief Returns the present queue handle.
+     */
+    static VkQueue GetPresentQueue() {
+        return CONTEXT.m_presentQueue;
+    }
+
 private:
     static VulkanContext CONTEXT;
 
@@ -100,18 +116,22 @@ private:
     VkInstance m_instance = VK_NULL_HANDLE;
     // Debug messenger
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
+    // Window surface
+    VkSurfaceKHR m_windowSurface = VK_NULL_HANDLE;
     // Selected physical device
     VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
     // Logical device
     VkDevice m_device = VK_NULL_HANDLE;
     // Queues
     VkQueue m_graphicsQueue = VK_NULL_HANDLE;
+    VkQueue m_presentQueue = VK_NULL_HANDLE;
 
     // Queue family indices for the selected physical device
     QueueFamilyIndices m_queueFamilyIndices;
 
     void createInstance();
     void createDebugMessenger();
+    void createWindowSurface();
     void selectPhysicalDevice();
     void createDevice();
 };

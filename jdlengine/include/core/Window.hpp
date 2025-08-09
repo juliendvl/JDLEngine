@@ -30,6 +30,13 @@ public:
     ~Window();
 
     /**
+     * @brief Returns the window instance.
+     */
+    static Window& Get() {
+        return *IWindow;
+    }
+
+    /**
      * @brief Returns the window size, in screen coordinates.
      */
     Size getSize() const;
@@ -62,6 +69,12 @@ public:
      * @brief Returns the Vulkan instance extensions that are required to work with the GLFW window.
      */
     static std::vector<const char*> GetRequiredInstanceExtensions();
+
+    /**
+     * @brief Creates the Vulkan window surface associated to this window.
+     * NOTE: The Window class does not manage the created object lifecycle
+     */
+    VkSurfaceKHR createWindowSurface() const;
 
 private:
     // Unique Window instance
