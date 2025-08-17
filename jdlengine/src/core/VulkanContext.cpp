@@ -115,6 +115,28 @@ static void s_DestroyDebugMessenger(
 }
 
 
+/* --- Device Extensions --- */
+static const std::vector<const char*> sDeviceExtensions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
+static bool s_DeviceExtensionsSupported(VkPhysicalDevice device)
+{
+    uint32_t nbExtensions = 0;
+    VK_CALL(vkEnumerateDeviceExtensionProperties(device, nullptr, &nbExtensions, nullptr));
+
+    std::vector<VkExtensionProperties> extensions(nbExtensions);
+    VK_CALL(vkEnumerateDeviceExtensionProperties(device, nullptr, &nbExtensions, extensions.data()));
+
+    std::set<std::string> requiredExtensions(sDeviceExtensions.begin(), sDeviceExtensions.end());
+    for (const auto& extension : extensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
+
 /* --- VulkanContext CLASS --- */
 VulkanContext VulkanContext::CONTEXT;
 
@@ -122,20 +144,16 @@ void VulkanContext::doInit()
 {
     if (m_instance == VK_NULL_HANDLE)
     {
-        JDL_INFO("VulkanContext - Creating instance");
         createInstance();
 
-        if (sUseValidationLayers)
-        {
-            JDL_INFO("VulkanContext - Creating debug messenger");
+        if (sUseValidationLayers) {
             createDebugMessenger();
         }
 
-        JDL_INFO("VulkanContext - Creating window surface");
         createWindowSurface();
-
         selectPhysicalDevice();
         createDevice();
+        createSwapChain();
     }
 }
 
@@ -143,6 +161,9 @@ void VulkanContext::doDestroy()
 {
     if (m_instance != VK_NULL_HANDLE)
     {
+        JDL_INFO("VulkanContext - Destroying swap chain");
+        m_swapChain.reset();
+
         JDL_INFO("VulkanContext - Destroying device");
         vkDestroyDevice(m_device, nullptr);
 
@@ -198,17 +219,21 @@ void VulkanContext::createInstance()
         createInfo.enabledLayerCount = 0;
     }
 
+    JDL_INFO("VulkanContext - Creating instance");
     VK_CALL(vkCreateInstance(&createInfo, nullptr, &m_instance));
 }
 
 void VulkanContext::createDebugMessenger()
 {
     VkDebugUtilsMessengerCreateInfoEXT createInfo = s_GetDebugMessengerCreateInfo();
+
+    JDL_INFO("VulkanContext - Creating debug messenger");
     VK_CALL(s_CreateDebugMessenger(m_instance, &createInfo, nullptr, &m_debugMessenger));
 }
 
 void VulkanContext::createWindowSurface()
 {
+    JDL_INFO("VulkanContext - Creating window surface");
     m_windowSurface = Window::Get().createWindowSurface();
 }
 
@@ -228,6 +253,10 @@ void VulkanContext::selectPhysicalDevice()
 
     for (VkPhysicalDevice device : physicalDevices)
     {
+        if (!s_DeviceExtensionsSupported(device)) {
+            continue;
+        }
+
         uint32_t nbQueues = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &nbQueues, nullptr);
 
@@ -310,7 +339,8 @@ void VulkanContext::createDevice()
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queuesCreateInfo.size());
     createInfo.pQueueCreateInfos = queuesCreateInfo.data();
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(sDeviceExtensions.size());
+    createInfo.ppEnabledExtensionNames = sDeviceExtensions.data();
     createInfo.enabledLayerCount = 0;
 
     JDL_INFO("VulkanContext - Creating device");
@@ -319,6 +349,12 @@ void VulkanContext::createDevice()
     // Retrieve queues handles
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.graphics, 0, &m_graphicsQueue);
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.present, 0, &m_presentQueue);
+}
+
+void VulkanContext::createSwapChain()
+{
+    JDL_INFO("VulkanContext - Creating swap chain");
+    m_swapChain = std::make_unique<SwapChain>();
 }
 
 } // namespace core

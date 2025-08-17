@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.hpp"
+#include "SwapChain.hpp"
 
 #include "utils/NonCopyable.hpp"
 
@@ -106,6 +107,13 @@ public:
         return CONTEXT.m_presentQueue;
     }
 
+    /**
+     * @brief Returns the current swap chain object.
+     */
+    static SwapChain& GetSwapChain() {
+        return *CONTEXT.m_swapChain;
+    }
+
 private:
     static VulkanContext CONTEXT;
 
@@ -129,11 +137,15 @@ private:
     // Queue family indices for the selected physical device
     QueueFamilyIndices m_queueFamilyIndices;
 
+    // SwapChain
+    std::unique_ptr<SwapChain> m_swapChain;
+
     void createInstance();
     void createDebugMessenger();
     void createWindowSurface();
     void selectPhysicalDevice();
     void createDevice();
+    void createSwapChain();
 };
 
 } // namespace core
