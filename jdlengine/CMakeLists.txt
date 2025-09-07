@@ -6,6 +6,7 @@ set(SRC_DIR ${ENGINE_DIR}/src)
 
 # Library sources
 file(GLOB CORE_SRC ${INC_DIR}/core/*.hpp ${SRC_DIR}/core/*.cpp)
+file(GLOB RESOURCE_SRC ${INC_DIR}/resource/*.hpp ${SRC_DIR}/resource/*.cpp)
 file(GLOB UTILS_SRC ${INC_DIR}/utils/*.hpp ${SRC_DIR}/utils/*.cpp)
 
 # DLL Import/Export (MSVC only)
@@ -18,6 +19,7 @@ add_library(
     ${ENGINE_NAME}
     SHARED
     ${CORE_SRC}
+    ${RESOURCE_SRC}
     ${UTILS_SRC}
 )
 include_directories(${INC_DIR})

@@ -1,6 +1,8 @@
 #include "core/Application.hpp"
 #include "core/VulkanContext.hpp"
 
+#include "resource/ResourceManager.hpp"
+
 #include "utils/Logger.hpp"
 
 
@@ -28,6 +30,7 @@ Application::Application(const char* name, int width, int height)
 
 Application::~Application()
 {
+    resource::ResourceManager::Clear();
     VulkanContext::Destroy();
 
     JDL_INFO("Destroying the application window");
