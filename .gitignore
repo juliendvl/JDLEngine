@@ -6,3 +6,6 @@
 
 # VSCode
 .vscode/
+
+# SPIR-V shaders
+*.spv
