@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.hpp"
+#include "Pipeline.hpp"
 #include "SwapChain.hpp"
 
 #include "utils/NonCopyable.hpp"
@@ -114,6 +115,13 @@ public:
         return *CONTEXT.m_swapChain;
     }
 
+    /**
+     * @brief Returns the current pipeline object.
+     */
+    static Pipeline& GetPipeline() {
+        return *CONTEXT.m_pipeline;
+    }
+
 private:
     static VulkanContext CONTEXT;
 
@@ -139,13 +147,17 @@ private:
 
     // SwapChain
     std::unique_ptr<SwapChain> m_swapChain;
+    // Graphics pipeline
+    std::unique_ptr<Pipeline> m_pipeline;
 
     void createInstance();
     void createDebugMessenger();
     void createWindowSurface();
     void selectPhysicalDevice();
     void createDevice();
+    void createDefaultResources();
     void createSwapChain();
+    void createPipeline();
 };
 
 } // namespace core

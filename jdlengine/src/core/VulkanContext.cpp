@@ -2,6 +2,9 @@
 #include "core/Application.hpp"
 #include "core/Window.hpp"
 
+#include "resource/ResourceManager.hpp"
+#include "resource/Shader.hpp"
+
 #include "utils/Logger.hpp"
 
 
@@ -153,7 +156,9 @@ void VulkanContext::doInit()
         createWindowSurface();
         selectPhysicalDevice();
         createDevice();
+        createDefaultResources();
         createSwapChain();
+        createPipeline();
     }
 }
 
@@ -161,6 +166,9 @@ void VulkanContext::doDestroy()
 {
     if (m_instance != VK_NULL_HANDLE)
     {
+        JDL_INFO("VulkanContext - Destroying graphics pipeline");
+        m_pipeline.reset();
+
         JDL_INFO("VulkanContext - Destroying swap chain");
         m_swapChain.reset();
 
@@ -351,10 +359,26 @@ void VulkanContext::createDevice()
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.present, 0, &m_presentQueue);
 }
 
+void VulkanContext::createDefaultResources()
+{
+    resource::ResourceManager::Create<resource::Shader>("default_vert", "shaders/default.vert.spv");
+    resource::ResourceManager::Create<resource::Shader>("default_frag", "shaders/default.frag.spv");
+}
+
 void VulkanContext::createSwapChain()
 {
     JDL_INFO("VulkanContext - Creating swap chain");
     m_swapChain = std::make_unique<SwapChain>();
+}
+
+void VulkanContext::createPipeline()
+{
+    JDL_INFO("VulkanContext - Creating graphics pipeline");
+
+    m_pipeline = std::make_unique<Pipeline>();
+    m_pipeline->addShader("default_vert", ShaderStage::eVertex);
+    m_pipeline->addShader("default_frag", ShaderStage::eFragment);
+    m_pipeline->create();
 }
 
 } // namespace core
