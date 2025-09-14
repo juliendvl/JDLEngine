@@ -158,6 +158,7 @@ void VulkanContext::doInit()
         createDevice();
         createDefaultResources();
         createSwapChain();
+        createRenderPass();
         createPipeline();
     }
 }
@@ -168,6 +169,9 @@ void VulkanContext::doDestroy()
     {
         JDL_INFO("VulkanContext - Destroying graphics pipeline");
         m_pipeline.reset();
+
+        JDL_INFO("VulkanContext - Destroying render pass");
+        m_renderPass.reset();
 
         JDL_INFO("VulkanContext - Destroying swap chain");
         m_swapChain.reset();
@@ -369,6 +373,12 @@ void VulkanContext::createSwapChain()
 {
     JDL_INFO("VulkanContext - Creating swap chain");
     m_swapChain = std::make_unique<SwapChain>();
+}
+
+void VulkanContext::createRenderPass()
+{
+    JDL_INFO("VulkanContext - Creating render pass");
+    m_renderPass = std::make_unique<RenderPass>();
 }
 
 void VulkanContext::createPipeline()

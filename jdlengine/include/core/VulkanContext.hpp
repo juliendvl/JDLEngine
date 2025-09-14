@@ -2,6 +2,7 @@
 
 #include "Core.hpp"
 #include "Pipeline.hpp"
+#include "RenderPass.hpp"
 #include "SwapChain.hpp"
 
 #include "utils/NonCopyable.hpp"
@@ -116,6 +117,13 @@ public:
     }
 
     /**
+     * @brief Returns the render pass object.
+     */
+    static RenderPass& GetRenderPass() {
+        return *CONTEXT.m_renderPass;
+    }
+
+    /**
      * @brief Returns the current pipeline object.
      */
     static Pipeline& GetPipeline() {
@@ -145,9 +153,8 @@ private:
     // Queue family indices for the selected physical device
     QueueFamilyIndices m_queueFamilyIndices;
 
-    // SwapChain
     std::unique_ptr<SwapChain> m_swapChain;
-    // Graphics pipeline
+    std::unique_ptr<RenderPass> m_renderPass;
     std::unique_ptr<Pipeline> m_pipeline;
 
     void createInstance();
@@ -157,6 +164,7 @@ private:
     void createDevice();
     void createDefaultResources();
     void createSwapChain();
+    void createRenderPass();
     void createPipeline();
 };
 

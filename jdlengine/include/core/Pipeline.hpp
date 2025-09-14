@@ -88,6 +88,20 @@ public:
      */
     void create();
 
+    /**
+     * @brief Returns the pipeline layout handle.
+     */
+    VkPipelineLayout getPipelineLayout() const {
+        return m_pipelineLayout;
+    }
+
+    /**
+     * @brief Returns the pipeline Vulkan handle.
+     */
+    VkPipeline getHandle() const {
+        return m_pipeline;
+    }
+
 private:
     // Shaders
     std::unordered_map<ShaderStage, resource::Shader*> m_shaders;
@@ -98,7 +112,6 @@ private:
     // Vulkan objects
     VkPipeline m_pipeline = VK_NULL_HANDLE;
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
-    VkRenderPass m_renderPass = VK_NULL_HANDLE;
 
     void createPipelineLayout();
     void createRenderPass();

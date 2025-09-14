@@ -17,7 +17,6 @@ Pipeline::~Pipeline()
     {
         VkDevice device = VulkanContext::GetDevice();
 
-        vkDestroyRenderPass(device, m_renderPass, nullptr);
         vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
         vkDestroyPipeline(device, m_pipeline, nullptr);
     }
@@ -71,7 +70,6 @@ void Pipeline::create()
     }
 
     createPipelineLayout();
-    createRenderPass();
 
     // Shaders
     std::vector<VkPipelineShaderStageCreateInfo> shadersInfo;
@@ -161,7 +159,7 @@ void Pipeline::create()
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = &dynamicState;
     pipelineInfo.layout = m_pipelineLayout;
-    pipelineInfo.renderPass = m_renderPass;
+    pipelineInfo.renderPass = VulkanContext::GetRenderPass().getHandle();
     pipelineInfo.subpass = 0;
 
     VkDevice device = VulkanContext::GetDevice();
@@ -175,40 +173,6 @@ void Pipeline::createPipelineLayout()
 
     VkDevice device = VulkanContext::GetDevice();
     VK_CALL(vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout));
-}
-
-void Pipeline::createRenderPass()
-{
-    auto& swapChain = VulkanContext::GetSwapChain();
-
-    VkAttachmentDescription colorAttachment{};
-    colorAttachment.format = swapChain.getSurfaceFormat().format;
-    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-    VkAttachmentReference colorAttachmentReference = {};
-    colorAttachmentReference.attachment = 0;
-    colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-    VkSubpassDescription subpass{};
-    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = 1;
-    subpass.pColorAttachments = &colorAttachmentReference;
-
-    VkRenderPassCreateInfo renderPassInfo = {};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &colorAttachment;
-    renderPassInfo.subpassCount = 1;
-    renderPassInfo.pSubpasses = &subpass;
-
-    VkDevice device = VulkanContext::GetDevice();
-    VK_CALL(vkCreateRenderPass(device, &renderPassInfo, nullptr, &m_renderPass));
 }
 
 } // namespace core
