@@ -379,6 +379,8 @@ void VulkanContext::createRenderPass()
 {
     JDL_INFO("VulkanContext - Creating render pass");
     m_renderPass = std::make_unique<RenderPass>();
+
+    m_swapChain->createFramebuffers();
 }
 
 void VulkanContext::createPipeline()

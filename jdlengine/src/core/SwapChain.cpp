@@ -23,10 +23,36 @@ SwapChain::~SwapChain()
 {
     VkDevice device = VulkanContext::GetDevice();
 
+    for (VkFramebuffer framebuffer : m_framebuffers) {
+        vkDestroyFramebuffer(device, framebuffer, nullptr);
+    }
     for (VkImageView view : m_views) {
         vkDestroyImageView(device, view, nullptr);
     }
     vkDestroySwapchainKHR(device, m_swapChain, nullptr);
+}
+
+void SwapChain::createFramebuffers()
+{
+    VkDevice device = VulkanContext::GetDevice();
+    VkRenderPass renderPass = VulkanContext::GetRenderPass().getHandle();
+
+    m_framebuffers.resize(getNbImages());
+    for (auto i = 0; i < getNbImages(); ++i)
+    {
+        VkImageView attachments[] = {m_views[i]};
+
+        VkFramebufferCreateInfo framebufferInfo = {};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = m_extent.width;
+        framebufferInfo.height = m_extent.height;
+        framebufferInfo.layers = 1;
+
+        VK_CALL(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_framebuffers[i]));
+    }
 }
 
 void SwapChain::create()

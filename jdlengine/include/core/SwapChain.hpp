@@ -69,6 +69,20 @@ public:
         return index < getNbImages() ? m_views[index] : VK_NULL_HANDLE;
     }
 
+    /**
+     * @brief Creates the framebuffers. Needs the render pass to be created.
+     */
+    void createFramebuffers();
+
+    /**
+     * @brief  Returns a swap chain framebuffer.
+     * @param  index Framebuffer index. Must be < getNbImages().
+     * @return Framebuffer, or VK_NULL_HANDLE if the index is invalid.
+     */
+    VkFramebuffer getFramebuffer(size_t index) const {
+        return index < m_framebuffers.size() ? m_framebuffers[index] : VK_NULL_HANDLE;
+    }
+
 private:
     // Surface format
     VkSurfaceFormatKHR m_surfaceFormat = {};
@@ -79,9 +93,9 @@ private:
     // Vulkan handle
     VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
 
-    // Images and Views
     std::vector<VkImage> m_images;
     std::vector<VkImageView> m_views;
+    std::vector<VkFramebuffer> m_framebuffers;
 
     void create();
     void createViews();
