@@ -55,6 +55,16 @@ void SwapChain::createFramebuffers()
     }
 }
 
+uint32_t SwapChain::getNextImageIndex(VkSemaphore semaphore, VkFence fence) const
+{
+    VkDevice device = VulkanContext::GetDevice();
+
+    uint32_t index;
+    VK_CALL(vkAcquireNextImageKHR(device, m_swapChain, UINT64_MAX, semaphore, fence, &index));
+
+    return index;
+}
+
 void SwapChain::create()
 {
     VkPhysicalDevice physicalDevice = VulkanContext::GetPhysicalDevice();

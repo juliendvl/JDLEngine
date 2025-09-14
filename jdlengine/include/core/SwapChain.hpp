@@ -83,6 +83,13 @@ public:
         return index < m_framebuffers.size() ? m_framebuffers[index] : VK_NULL_HANDLE;
     }
 
+    /**
+     * @brief Returns the next available frame index.
+     * @param semaphore Optional signal semaphore
+     * @param fence Optional signal fence
+     */
+    uint32_t getNextImageIndex(VkSemaphore semaphore = VK_NULL_HANDLE, VkFence fence = VK_NULL_HANDLE) const;
+
 private:
     // Surface format
     VkSurfaceFormatKHR m_surfaceFormat = {};

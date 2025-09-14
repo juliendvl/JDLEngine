@@ -143,6 +143,20 @@ static bool s_DeviceExtensionsSupported(VkPhysicalDevice device)
 /* --- VulkanContext CLASS --- */
 VulkanContext VulkanContext::CONTEXT;
 
+std::vector<VkCommandBuffer> VulkanContext::AllocateCommandBuffers(size_t count)
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = CONTEXT.m_commandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = static_cast<uint32_t>(count);
+
+    std::vector<VkCommandBuffer> commandBuffers(count);
+    VK_CALL(vkAllocateCommandBuffers(CONTEXT.m_device, &allocInfo, commandBuffers.data()));
+
+    return commandBuffers;
+}
+
 void VulkanContext::doInit()
 {
     if (m_instance == VK_NULL_HANDLE)
@@ -177,6 +191,7 @@ void VulkanContext::doDestroy()
         m_swapChain.reset();
 
         JDL_INFO("VulkanContext - Destroying device");
+        vkDestroyCommandPool(m_device, m_commandPool, nullptr);
         vkDestroyDevice(m_device, nullptr);
 
         JDL_INFO("VulkanContext - Creating window surface");
@@ -361,6 +376,14 @@ void VulkanContext::createDevice()
     // Retrieve queues handles
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.graphics, 0, &m_graphicsQueue);
     vkGetDeviceQueue(m_device, *m_queueFamilyIndices.present, 0, &m_presentQueue);
+
+    // Create command pool
+    VkCommandPoolCreateInfo poolInfo = {};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = *m_queueFamilyIndices.graphics;
+
+    VK_CALL(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool));
 }
 
 void VulkanContext::createDefaultResources()

@@ -26,11 +26,18 @@ Application::Application(const char* name, int width, int height)
     m_window = std::make_unique<Window>(name, width, height);
 
     VulkanContext::Init();
+
+    JDL_INFO("Creating the application renderer");
+    m_renderer = std::make_unique<Renderer>();
 }
 
 Application::~Application()
 {
     resource::ResourceManager::Clear();
+
+    JDL_INFO("Destroying the application renderer");
+    m_renderer.reset();
+
     VulkanContext::Destroy();
 
     JDL_INFO("Destroying the application window");
@@ -42,6 +49,7 @@ void Application::run()
     while (!m_window->isClosing())
     {
         m_window->pollEvents();
+        m_renderer->renderFrame();
     }
 }
 

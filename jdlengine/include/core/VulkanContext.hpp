@@ -130,6 +130,12 @@ public:
         return *CONTEXT.m_pipeline;
     }
 
+    /**
+     * @brief Allocates and returns command buffers.
+     * @param count The number of command buffers to allocate
+     */
+    static std::vector<VkCommandBuffer> AllocateCommandBuffers(size_t count = 1);
+
 private:
     static VulkanContext CONTEXT;
 
@@ -149,6 +155,8 @@ private:
     // Queues
     VkQueue m_graphicsQueue = VK_NULL_HANDLE;
     VkQueue m_presentQueue = VK_NULL_HANDLE;
+    // Command pool
+    VkCommandPool m_commandPool = VK_NULL_HANDLE;
 
     // Queue family indices for the selected physical device
     QueueFamilyIndices m_queueFamilyIndices;
