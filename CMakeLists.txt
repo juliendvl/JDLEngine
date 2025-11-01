@@ -15,6 +15,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Use C++17 as standard
 set(CMAKE_CXX_STANDARD 17)
 
+# Engine library
+add_subdirectory(${ENGINE_DIR})
 # sandbox application
 option(BUILD_SANDBOX "Build the sandbox application" ON)
 
