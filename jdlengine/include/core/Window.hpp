@@ -69,6 +69,11 @@ public:
         glfwWaitEvents();
     }
 
+    /**
+     * @brief Returns all the instance extensions that are required to work with the GLFW window.
+     */
+    static std::vector<const char*> GetInstanceExtensions();
+
 private:
     // Single Window instance
     static Window* IWindow;

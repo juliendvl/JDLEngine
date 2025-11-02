@@ -4,8 +4,9 @@
 set(INC_DIR ${ENGINE_DIR}/include)
 set(SRC_DIR ${ENGINE_DIR}/src)
 
-file(GLOB CORE_SRC  ${INC_DIR}/core/*.hpp  ${SRC_DIR}/core/*.cpp)
-file(GLOB UTILS_SRC ${INC_DIR}/utils/*.hpp ${SRC_DIR}/utils/*.cpp)
+file(GLOB CORE_SRC   ${INC_DIR}/core/*.hpp   ${SRC_DIR}/core/*.cpp)
+file(GLOB UTILS_SRC  ${INC_DIR}/utils/*.hpp  ${SRC_DIR}/utils/*.cpp)
+file(GLOB VULKAN_SRC ${INC_DIR}/vulkan/*.hpp ${SRC_DIR}/vulkan/*.cpp)
 
 # DLL Export specification macro
 if (MSVC)
@@ -17,6 +18,7 @@ add_library(
 	SHARED
 	${CORE_SRC}
 	${UTILS_SRC}
+	${VULKAN_SRC}
 )
 include_directories(${INC_DIR})
 
@@ -31,3 +33,7 @@ set(GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
 add_subdirectory(${VENDOR_DIR}/glfw)
 include_directories(${VENDOR_DIR}/glfw/include)
 target_link_libraries(${ENGINE_NAME} glfw)
+
+# Vulkan
+find_package(Vulkan REQUIRED)
+target_link_libraries(${ENGINE_NAME} Vulkan::Vulkan)

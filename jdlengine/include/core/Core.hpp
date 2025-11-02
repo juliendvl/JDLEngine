@@ -19,6 +19,19 @@
 #include <string>
 #include <vector>
 
+#include <vulkan/vulkan.h>
+
+// --- Macros ---
+#ifndef NDEBUG
+    #define VK_CALL(f)  {                                                           \
+                            VkResult r = f;                                         \
+                            if (r != VK_SUCCESS)                                    \
+                                JDL_FATAL("{} failed with status {}", #f, (int)r);  \
+                        }
+#else
+    #define VK_CALL(f) f
+#endif // !NDEBUG
+
 
 // --- Pragma Warnings ---
 #pragma warning(disable: 4251)

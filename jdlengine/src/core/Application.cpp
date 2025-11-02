@@ -2,6 +2,8 @@
 
 #include "utils/Logger.hpp"
 
+#include "vulkan/VulkanContext.hpp"
+
 
 namespace jdl
 {
@@ -20,10 +22,15 @@ Application::Application(const std::string& name, size_t width, size_t height)
 
     // Create the application window
     m_window = std::make_unique<Window>(name, width, height);
+    // Initialize the Vulkan context
+    vk::VulkanContext::Init();
 }
 
 Application::~Application()
 {
+    // Destroy all the Vulkan resources
+    vk::VulkanContext::Destroy();
+    // Destroy the application window
     m_window.reset();
 }
 
