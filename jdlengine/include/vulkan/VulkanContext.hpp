@@ -39,11 +39,14 @@ private:
 
     // Vulkan instance
     VkInstance m_instance = VK_NULL_HANDLE;
+    // Debug Messenger
+    VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
 
     void doInit();
     void doDestroy();
 
     void createInstance();
+    void createDebugMessenger();
 };
 
 } // namespace vk
