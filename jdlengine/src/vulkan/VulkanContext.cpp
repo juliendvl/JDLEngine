@@ -130,6 +130,7 @@ void VulkanContext::doInit()
 
     createInstance();
     createDebugMessenger();
+    createDevice();
 }
 
 void VulkanContext::doDestroy()
@@ -137,6 +138,8 @@ void VulkanContext::doDestroy()
     if (m_instance == VK_NULL_HANDLE) {
         return;
     }
+
+    m_device.reset();
 
     if (m_debugMessenger != VK_NULL_HANDLE) {
         s_DestroyDebugMessenger(m_instance, m_debugMessenger, nullptr);
@@ -193,6 +196,11 @@ void VulkanContext::createDebugMessenger()
 
     auto createInfo = s_DebugMessengerCreateInfo();
     VK_CALL(s_CreateDebugMessenger(m_instance, &createInfo, nullptr, &m_debugMessenger));
+}
+
+void VulkanContext::createDevice()
+{
+    m_device = std::make_unique<VulkanDevice>();
 }
 
 } // namespace vk

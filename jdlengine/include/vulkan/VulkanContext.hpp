@@ -4,6 +4,8 @@
 
 #include "utils/NonCopyable.hpp"
 
+#include "VulkanDevice.hpp"
+
 
 namespace jdl
 {
@@ -34,6 +36,13 @@ public:
         return CONTEXT.m_instance;
     }
 
+    /**
+     * @brief Returns the Vulkan device object.
+     */
+    static VulkanDevice& GetDevice() {
+        return *CONTEXT.m_device;
+    }
+
 private:
     static VulkanContext CONTEXT;
 
@@ -42,11 +51,15 @@ private:
     // Debug Messenger
     VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
 
+    // Device
+    std::unique_ptr<VulkanDevice> m_device;
+
     void doInit();
     void doDestroy();
 
     void createInstance();
     void createDebugMessenger();
+    void createDevice();
 };
 
 } // namespace vk
