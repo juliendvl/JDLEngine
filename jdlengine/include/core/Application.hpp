@@ -5,6 +5,8 @@
 
 #include "utils/NonCopyable.hpp"
 
+#include "vulkan/VulkanRenderer.hpp"
+
 
 namespace jdl
 {
@@ -68,6 +70,8 @@ private:
     std::string m_name;
     // Application window
     std::unique_ptr<Window> m_window;
+    // Application renderer
+    std::unique_ptr<vk::VulkanRenderer> m_renderer;
 };
 
 /**
