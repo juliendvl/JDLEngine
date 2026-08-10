@@ -50,7 +50,7 @@ void VulkanCommandBuffer::submit(
 	const std::vector<VkPipelineStageFlags>& wait_stages,
 	const std::vector<VkSemaphore>& signal_semaphores,
 	VkFence fence
-)
+) const
 {
 	VkSubmitInfo submit_info {
 		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -80,7 +80,7 @@ void VulkanCommandBuffer::transition_image_layout(
 	VkPipelineStageFlags2 src_stage_mask,
 	VkPipelineStageFlags2 dst_stage_mask,
 	VkImageAspectFlags aspect_mask
-)
+) const
 {
 	VkImageMemoryBarrier2 barrier {
 		.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
@@ -110,7 +110,7 @@ void VulkanCommandBuffer::transition_image_layout(
 	vkCmdPipelineBarrier2(m_commandBuffer, &dependency_info);
 }
 
-void VulkanCommandBuffer::bind_graphics_pipeline(VkPipeline pipeline)
+void VulkanCommandBuffer::bind_graphics_pipeline(VkPipeline pipeline) const
 {
 	vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 }
@@ -120,7 +120,7 @@ void VulkanCommandBuffer::set_viewport(
 	VkExtent2D extent,
 	float min_depth,
 	float max_depth
-)
+) const
 {
 	VkViewport viewport {
 		.x = static_cast<float>(offset.x),
@@ -133,7 +133,7 @@ void VulkanCommandBuffer::set_viewport(
 	vkCmdSetViewport(m_commandBuffer, 0, 1, &viewport);
 }
 
-void VulkanCommandBuffer::set_scissor(VkOffset2D offset, VkExtent2D extent)
+void VulkanCommandBuffer::set_scissor(VkOffset2D offset, VkExtent2D extent) const
 {
 	VkRect2D scissor { .offset = offset, .extent = extent };
 	vkCmdSetScissor(m_commandBuffer, 0, 1, &scissor);
@@ -144,7 +144,7 @@ void VulkanCommandBuffer::draw(
 	uint32_t nb_instances,
 	uint32_t first_vertex,
 	uint32_t first_instance
-)
+) const
 {
 	vkCmdDraw(m_commandBuffer, nb_vertices, nb_instances, first_vertex, first_instance);
 }

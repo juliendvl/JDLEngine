@@ -49,6 +49,7 @@ target_sources(
     ${INC_DIR}/utils/non_copyable.hpp
     ${SRC_DIR}/utils/logger.cpp
     # vk module
+    ${INC_DIR}/vk/vulkan_buffers.hpp
     ${INC_DIR}/vk/vulkan_context.hpp
     ${INC_DIR}/vk/vulkan_command_buffer.hpp
     ${INC_DIR}/vk/vulkan_device.hpp
@@ -56,6 +57,8 @@ target_sources(
     ${INC_DIR}/vk/vulkan_pipeline.hpp
     ${INC_DIR}/vk/vulkan_renderer.hpp
     ${INC_DIR}/vk/vulkan_swapchain.hpp
+    ${INC_DIR}/vk/vulkan_utils.hpp
+    ${SRC_DIR}/vk/vulkan_buffers.cpp
     ${SRC_DIR}/vk/vulkan_context.cpp
     ${SRC_DIR}/vk/vulkan_command_buffer.cpp
     ${SRC_DIR}/vk/vulkan_device.cpp
@@ -63,6 +66,7 @@ target_sources(
     ${SRC_DIR}/vk/vulkan_pipeline.cpp
     ${SRC_DIR}/vk/vulkan_renderer.cpp
     ${SRC_DIR}/vk/vulkan_swapchain.cpp
+    ${SRC_DIR}/vk/vulkan_utils.cpp
 )
 
 target_include_directories(${APP_NAME} PRIVATE ${INC_DIR})

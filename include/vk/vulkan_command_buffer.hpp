@@ -54,7 +54,7 @@ public:
 		const std::vector<VkPipelineStageFlags>& wait_stages = {},
 		const std::vector<VkSemaphore>& signal_semaphores = {},
 		VkFence fence = VK_NULL_HANDLE
-	);
+	) const;
 
 	/**
 	 * @brief Explicitly deallocates the command buffer.
@@ -81,13 +81,13 @@ public:
 		VkPipelineStageFlags2 src_stage_mask,
 		VkPipelineStageFlags2 dst_stage_mask,
 		VkImageAspectFlags aspect_mask
-	);
+	) const;
 
 	/**
 	 * @brief Records the command allowing to bind the graphics pipeline.
 	 * @param pipeline Graphics pipeline object.
 	 */
-	void bind_graphics_pipeline(VkPipeline pipeline);
+	void bind_graphics_pipeline(VkPipeline pipeline) const;
 
 	/**
 	 * @brief Records the command allowing to set the viewport.
@@ -101,14 +101,14 @@ public:
 		VkExtent2D extent,
 		float min_depth,
 		float max_depth
-	);
+	) const;
 
 	/**
 	 * @brief Records the command allowing to set the scissor.
 	 * @param offset Scissor top-left corner.
 	 * @param extent Scissor dimensions.
 	 */
-	void set_scissor(VkOffset2D offset, VkExtent2D extent);
+	void set_scissor(VkOffset2D offset, VkExtent2D extent) const;
 
 	/**
 	 * @brief Records the command allowing to draw vertices.
@@ -122,7 +122,7 @@ public:
 		uint32_t nb_instances = 1,
 		uint32_t first_vertex = 0,
 		uint32_t first_instance = 0
-	);
+	) const;
 
 private:
 	VK_ATTR(VkDevice, m_device);
