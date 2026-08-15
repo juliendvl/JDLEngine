@@ -93,3 +93,6 @@ target_link_libraries(${APP_NAME} PRIVATE glfw)
 # Vulkan
 find_package(Vulkan REQUIRED)
 target_link_libraries(${APP_NAME} PRIVATE Vulkan::Vulkan)
+
+# GLM
+target_include_directories(${APP_NAME} PRIVATE ${VENDOR_DIR}/glm)
