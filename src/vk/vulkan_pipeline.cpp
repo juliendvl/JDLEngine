@@ -1,5 +1,7 @@
 #include "vk/vulkan_pipeline.hpp"
 
+#include "core/vertex.hpp"
+
 #include "resource/shader.hpp"
 
 #include "utils/logger.hpp"
@@ -105,10 +107,41 @@ void VulkanPipeline::create_pipeline()
 	dynamic_state.pDynamicStates = VK_DATA(s_DynamicState);
 
 	// Vertex input
+	VkVertexInputBindingDescription binding_descriptions[] = {
+		{
+			.binding = 0,
+			.stride = sizeof(core::Vertex),
+			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
+		}
+	};
+
+	VkVertexInputAttributeDescription attribute_descriptions[] = {
+		{ // Position
+			.location = 0,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = offsetof(core::Vertex, position)
+		},
+		{ // Normal
+			.location = 1,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = offsetof(core::Vertex, normal)
+		},
+		{ // UV
+			.location = 2,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32_SFLOAT,
+			.offset = offsetof(core::Vertex, uv)
+		}
+	};
+
 	VkPipelineVertexInputStateCreateInfo vertex_input {};
 	vertex_input.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertex_input.vertexBindingDescriptionCount = 0;
-	vertex_input.vertexAttributeDescriptionCount = 0;
+	vertex_input.vertexBindingDescriptionCount = 1;
+	vertex_input.pVertexBindingDescriptions = binding_descriptions;
+	vertex_input.vertexAttributeDescriptionCount = 3;
+	vertex_input.pVertexAttributeDescriptions = attribute_descriptions;
 
 	// Input assembly
 	VkPipelineInputAssemblyStateCreateInfo input_assembly {};

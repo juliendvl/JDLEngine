@@ -149,5 +149,19 @@ void VulkanCommandBuffer::draw(
 	vkCmdDraw(m_commandBuffer, nb_vertices, nb_instances, first_vertex, first_instance);
 }
 
+void VulkanCommandBuffer::draw_indexed(
+	uint32_t nb_indices,
+	uint32_t nb_instances,
+	uint32_t first_index,
+	uint32_t first_instance
+) const
+{
+	vkCmdDrawIndexed(
+		m_commandBuffer,
+		nb_indices, nb_instances,
+		first_index, 0, first_instance
+	);
+}
+
 } // namespace vk
 } // namespace jdl

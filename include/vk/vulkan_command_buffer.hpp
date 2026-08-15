@@ -124,6 +124,20 @@ public:
 		uint32_t first_instance = 0
 	) const;
 
+	/**
+	 * @brief Records the command allowing to draw indices.
+	 * @param nb_indices The number of indices to draw.
+	 * @param nb_instances The number of instances to draw.
+	 * @param first_index The index of the first index.
+	 * @param first_instance The index of the first instance.
+	 */
+	void draw_indexed(
+		uint32_t nb_indices,
+		uint32_t nb_instances = 1,
+		uint32_t first_index = 0,
+		uint32_t first_instance = 0
+	) const;
+
 private:
 	VK_ATTR(VkDevice, m_device);
 	VK_ATTR(VkCommandPool, m_commandPool);

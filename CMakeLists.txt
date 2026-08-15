@@ -35,14 +35,18 @@ target_sources(
     # core module
     ${INC_DIR}/core/application.hpp
     ${INC_DIR}/core/object.hpp
+    ${INC_DIR}/core/render_context.hpp
     ${INC_DIR}/core/size.hpp
+    ${INC_DIR}/core/vertex.hpp
     ${INC_DIR}/core/window.hpp
     ${SRC_DIR}/core/application.cpp
     ${SRC_DIR}/core/window.cpp
     # resource module
+    ${INC_DIR}/resource/render_mesh.hpp
     ${INC_DIR}/resource/resource.hpp
     ${INC_DIR}/resource/resource_manager.hpp
     ${INC_DIR}/resource/shader.hpp
+    ${SRC_DIR}/resource/render_mesh.cpp
     ${SRC_DIR}/resource/shader.cpp
     # utils module
     ${INC_DIR}/utils/logger.hpp

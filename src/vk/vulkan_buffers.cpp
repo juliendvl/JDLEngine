@@ -74,6 +74,8 @@ void VulkanBuffer::allocate_memory(MemoryProperty memory_properties)
 	if (m_deviceMemory == VK_NULL_HANDLE) {
 		JDL_FATAL("Failed to allocate memory for the Vulkan buffer");
 	}
+
+	VK_CALL(vkBindBufferMemory(m_device, m_buffer, m_deviceMemory, 0));
 }
 
 

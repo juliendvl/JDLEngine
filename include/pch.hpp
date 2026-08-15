@@ -6,6 +6,11 @@
 
 #include <vulkan/vulkan.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_RADIANS
+
+#include <glm/glm.hpp>
+
 
 #define VK_ATTR(vkType, vkAttr) vkType vkAttr = VK_NULL_HANDLE
 
