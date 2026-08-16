@@ -54,7 +54,9 @@ target_sources(
     # utils module
     ${INC_DIR}/utils/logger.hpp
     ${INC_DIR}/utils/non_copyable.hpp
+    ${INC_DIR}/utils/string_utils.hpp
     ${SRC_DIR}/utils/logger.cpp
+    ${SRC_DIR}/utils/string_utils.cpp
     # vk module
     ${INC_DIR}/vk/vulkan_buffers.hpp
     ${INC_DIR}/vk/vulkan_context.hpp
