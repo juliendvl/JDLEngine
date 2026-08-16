@@ -41,6 +41,9 @@ target_sources(
     ${INC_DIR}/core/window.hpp
     ${SRC_DIR}/core/application.cpp
     ${SRC_DIR}/core/window.cpp
+    # math module
+    ${INC_DIR}/math/srt_matrix.hpp
+    ${SRC_DIR}/math/srt_matrix.cpp
     # resource module
     ${INC_DIR}/resource/render_mesh.hpp
     ${INC_DIR}/resource/resource.hpp
