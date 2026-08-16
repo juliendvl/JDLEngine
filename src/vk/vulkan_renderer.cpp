@@ -133,6 +133,10 @@ void VulkanRenderer::wait_idle() const
 void VulkanRenderer::resize_event(const core::ResizeEvent& event)
 {
     m_framebufferResized = true;
+
+    if (m_scene) {
+        m_scene->resize_event(event);
+    }
 }
 
 void VulkanRenderer::create_sync_objects()
@@ -233,6 +237,10 @@ void VulkanRenderer::record_command_buffer(
     context.command_buffer = command_buffer;
 
     s_Mesh->render(context);
+
+    if (m_scene) {
+        m_scene->render(context);
+    }
 
     // End dynamic rendering
     vkCmdEndRendering(command_buffer->get());

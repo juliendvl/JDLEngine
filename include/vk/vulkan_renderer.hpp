@@ -4,6 +4,8 @@
 
 #include "core/events.hpp"
 
+#include "scene/scene.hpp"
+
 #include "utils/non_copyable.hpp"
 
 
@@ -23,6 +25,19 @@ public:
      * @param r, g, b, a Background color components.
      */
     void set_background_color(float r, float g, float b, float a = 1.0f);
+
+    /**
+     * @brief Returns the rendered scene.
+     */
+    const std::shared_ptr<scene::Scene>& get_scene() const { return m_scene; }
+
+    /**
+     * @brief Sets the rendered scene.
+     * @param scene The new scene.
+     */
+    void set_scene(const std::shared_ptr<scene::Scene>& scene) {
+        m_scene = scene;
+    }
 
     /**
      * @brief Renders a new frame.
@@ -59,6 +74,9 @@ private:
 
     // Indicates that the framebuffer has been resized (swapchain is dirty)
     bool m_framebufferResized = false;
+
+    // Active scene
+    std::shared_ptr<scene::Scene> m_scene = nullptr;
 
     void create_sync_objects();
     void create_command_buffers();

@@ -51,6 +51,11 @@ target_sources(
     ${INC_DIR}/resource/shader.hpp
     ${SRC_DIR}/resource/render_mesh.cpp
     ${SRC_DIR}/resource/shader.cpp
+    # scene module
+    ${INC_DIR}/scene/scene.hpp
+    ${INC_DIR}/scene/scene_node.hpp
+    ${SRC_DIR}/scene/scene.cpp
+    ${SRC_DIR}/scene/scene_node.cpp
     # utils module
     ${INC_DIR}/utils/logger.hpp
     ${INC_DIR}/utils/non_copyable.hpp
