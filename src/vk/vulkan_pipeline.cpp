@@ -73,9 +73,17 @@ void VulkanPipeline::create()
 
 void VulkanPipeline::create_pipeline_layout()
 {
-	VkPipelineLayoutCreateInfo pipeline_layout_info {};
-	pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	VkPushConstantRange push_constant_range {
+		.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+		.offset = 0,
+		.size = sizeof(glm::mat4)
+	};
 
+	VkPipelineLayoutCreateInfo pipeline_layout_info {
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+		.pushConstantRangeCount = 1,
+		.pPushConstantRanges = &push_constant_range
+	};
 	VK_CALL(
 		vkCreatePipelineLayout(
 			m_device, &pipeline_layout_info, nullptr, &m_pipelineLayout

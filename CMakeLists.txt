@@ -52,8 +52,10 @@ target_sources(
     ${SRC_DIR}/resource/render_mesh.cpp
     ${SRC_DIR}/resource/shader.cpp
     # scene module
+    ${INC_DIR}/scene/mesh_node.hpp
     ${INC_DIR}/scene/scene.hpp
     ${INC_DIR}/scene/scene_node.hpp
+    ${SRC_DIR}/scene/mesh_node.cpp
     ${SRC_DIR}/scene/scene.cpp
     ${SRC_DIR}/scene/scene_node.cpp
     # utils module

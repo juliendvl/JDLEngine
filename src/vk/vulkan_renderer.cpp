@@ -6,18 +6,11 @@
 
 #include "vk/vulkan_context.hpp"
 
-// TODO To be removed!
-#include "resource/render_mesh.hpp"
-#include "resource/resource_manager.hpp"
-
 
 namespace jdl
 {
 namespace vk
 {
-
-// TODO To be removed!
-static resource::RenderMesh* s_Mesh = nullptr;
 
 VulkanRenderer::VulkanRenderer()
 {
@@ -26,16 +19,6 @@ VulkanRenderer::VulkanRenderer()
 
     create_sync_objects();
     create_command_buffers();
-
-    // TODO To be removed!
-    s_Mesh = resource::ResourceManager::Create<resource::RenderMesh>("MESH");
-    s_Mesh->add_vertices({
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}}
-    });
-    s_Mesh->add_indices({ 0, 1, 2, 2, 3, 0 });
 }
 
 VulkanRenderer::~VulkanRenderer()
@@ -235,8 +218,6 @@ void VulkanRenderer::record_command_buffer(
     // Draw
     core::RenderContext context;
     context.command_buffer = command_buffer;
-
-    s_Mesh->render(context);
 
     if (m_scene) {
         m_scene->render(context);

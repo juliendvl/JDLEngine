@@ -1,5 +1,7 @@
 #include "vk/vulkan_command_buffer.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "utils/logger.hpp"
 
 #include "vk/vulkan_context.hpp"
@@ -160,6 +162,18 @@ void VulkanCommandBuffer::draw_indexed(
 		m_commandBuffer,
 		nb_indices, nb_instances,
 		first_index, 0, first_instance
+	);
+}
+
+void VulkanCommandBuffer::update_model_matrix(const glm::mat4& matrix) const
+{
+	auto pipeline_layout = VulkanContext::GetPipeline().get_pipeline_layout();
+
+	vkCmdPushConstants(
+		m_commandBuffer, pipeline_layout,
+		VK_SHADER_STAGE_VERTEX_BIT,
+		0, sizeof(matrix),
+		glm::value_ptr(matrix)
 	);
 }
 

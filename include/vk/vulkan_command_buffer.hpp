@@ -8,7 +8,7 @@ namespace jdl
 namespace vk
 {
 
-class VulkanCommandBuffer
+class VulkanCommandBuffer : private NonCopyable<VulkanCommandBuffer>
 {
 public:
 	/**
@@ -137,6 +137,13 @@ public:
 		uint32_t first_index = 0,
 		uint32_t first_instance = 0
 	) const;
+
+	/**
+	 * @brief Records the command allowing to update the model matrix (push
+	 * constant update).
+	 * @param matrix The model matrix to be uploaded.
+	 */
+	void update_model_matrix(const glm::mat4& matrix) const;
 
 private:
 	VK_ATTR(VkDevice, m_device);
